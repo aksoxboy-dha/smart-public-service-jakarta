@@ -15,7 +15,7 @@ const customIcon = new L.Icon({
 
 export default function JakartaMap({ data }: { data: WilayahData[] }) {
   return (
-    <div className="w-full h-[420px] rounded-2xl overflow-hidden border border-slate-800 shadow-xl">
+    <div className="w-full h-[380px] rounded-2xl overflow-hidden border border-slate-800 shadow-xl">
       <MapContainer
         center={[-6.2088, 106.8456]}
         zoom={11}

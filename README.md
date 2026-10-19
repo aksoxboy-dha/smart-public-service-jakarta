@@ -1,31 +1,13 @@
-# Smart Public Service Jakarta - Urban & Health Resilience Dashboard
+# Smart Public Service Jakarta - Resilience Dashboard v3.0
 
-Dashboard ketahanan perkotaan dan kesehatan masyarakat interaktif berbasis **Next.js 14 (App Router)** dan **Open Data DKI Jakarta**.
+Dashboard intelijen ketahanan perkotaan dengan **Real-Time Public API Integration** dan **Dynamic Policy Recommendation Engine**.
 
-## 🌟 Fitur Utama
-1. **Header & Filter Wilayah:** Pilihan interaktif per-wilayah Administrasi DKI Jakarta.
-2. **Quick Metric Cards:** Indikator utama ISPU (DLH), Kasus ISPA/DBD (Dinkes), Keterisian BOR RS, dan Resilience Score Engine.
-3. **Peta Spasial Interaktif (Leaflet):** Pemetaan titik koordinat risiko wilayah Jakarta.
-4. **Policy Recommendation Panel:** Panel rekomendasi kebijakan otomatis berdasarkan analisis risiko multivariat.
+## 🚀 Fitur Baru v3.0:
+- **Real-Time Flood API Route (`/api/flood`):** Integrasi live data pos pantau pintu air dan status genangan.
+- **Dynamic Policy Recommendation Engine:** Otomasi saran kebijakan berbasis ambang batas indikator lingkungan & kesehatan.
+- **Real-Time Risk Scoring:** Perhitungan skor ketahanan perkotaan yang diperbarui secara dinamis.
 
-## 🚀 Panduan Jalankan di Lokal
-```bash
-# 1. Install Dependencies
-npm install
-
-# 2. Jalankan Server Dev
-npm run dev
-```
-Buka `http://localhost:3000` di browser.
-
-## 📦 Deploy ke GitHub & Vercel
-1. Ekstrak folder ini dan inisialisasi Git:
-   ```bash
-   git init
-   git add .
-   git commit -m "feat: Resilience Dashboard Open Data Jakarta"
-   git branch -M main
-   git remote add origin https://github.com/<USERNAME_ANDA>/smart-public-service-jakarta.git
-   git push -u origin main
-   ```
-2. Hubungkan repository di **[Vercel Dashboard](https://vercel.com/dashboard)** untuk auto-deploy!
+## 📦 Deploy
+1. Ekstrak & `npm install`
+2. Jalankan `npm run dev`
+3. Commit & Push ke GitHub untuk auto-deploy di Vercel.
