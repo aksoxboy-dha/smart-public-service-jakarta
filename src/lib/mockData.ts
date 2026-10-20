@@ -3,7 +3,7 @@ export interface WilayahData {
   nama: string;
   ispu: number;
   pm25: number;
-  statusAir: 'Aman' | 'Siaga 3' | 'Siaga 2' | 'Siaga 1';
+  statusAir: 'Normal' | 'Siaga 3' | 'Siaga 2' | 'Siaga 1';
   tinggiAir: number;
   kasusDBD: number;
   kasusISPA: number;
@@ -14,11 +14,23 @@ export interface WilayahData {
   kategoriRisiko: 'Tinggi' | 'Sedang' | 'Rendah';
 }
 
-export interface PintuAirData {
+export interface StasiunData {
+  id: string;
+  nama: string;
+  lokasi: string;
+  jenis: 'DLH Air Quality' | 'SDA Pos Pantau' | 'Dinkes Faskes';
+  status: 'Online' | 'Maintenance' | 'Offline';
+  ispu: number;
+  lastUpdate: string;
+}
+
+export interface BPBDWaterLevel {
   id: string;
   nama: string;
   ketinggian: number;
-  status: 'Aman' | 'Siaga 3' | 'Siaga 2' | 'Siaga 1';
+  status: 'Siaga 1' | 'Siaga 2' | 'Siaga 3' | 'Normal (Siaga 4)';
+  trend: 'Naik' | 'Turun' | 'Konstan';
+  cuaca: string;
   lokasi: string;
   lastUpdate: string;
 }
@@ -29,7 +41,7 @@ export const JAKARTA_REGIONS: WilayahData[] = [
     nama: 'Jakarta Selatan',
     ispu: 125,
     pm25: 48,
-    statusAir: 'Aman',
+    statusAir: 'Normal',
     tinggiAir: 110,
     kasusDBD: 45,
     kasusISPA: 320,
@@ -59,7 +71,7 @@ export const JAKARTA_REGIONS: WilayahData[] = [
     nama: 'Jakarta Pusat',
     ispu: 110,
     pm25: 39,
-    statusAir: 'Aman',
+    statusAir: 'Normal',
     tinggiAir: 90,
     kasusDBD: 30,
     kasusISPA: 210,
@@ -74,7 +86,7 @@ export const JAKARTA_REGIONS: WilayahData[] = [
     nama: 'Jakarta Barat',
     ispu: 135,
     pm25: 55,
-    statusAir: 'Aman',
+    statusAir: 'Normal',
     tinggiAir: 130,
     kasusDBD: 62,
     kasusISPA: 380,
@@ -108,4 +120,13 @@ export const MONTHLY_TRENDS = [
   { bulan: 'Agt', ispu: 148, ispa: 410, dbd: 48 },
   { bulan: 'Sep', ispu: 140, ispa: 390, dbd: 55 },
   { bulan: 'Okt', ispu: 133, ispa: 354, dbd: 54 },
+];
+
+export const STATIONS_DATA: StasiunData[] = [
+  { id: 'ST-01', nama: 'SPKU Bundaran HI', lokasi: 'Jakarta Pusat', jenis: 'DLH Air Quality', status: 'Online', ispu: 110, lastUpdate: '10 Mnt Lalu' },
+  { id: 'ST-02', nama: 'SPKU Kelapa Gading', lokasi: 'Jakarta Utara', jenis: 'DLH Air Quality', status: 'Online', ispu: 155, lastUpdate: '5 Mnt Lalu' },
+  { id: 'ST-03', nama: 'Pos Pantau Manggarai', lokasi: 'Jakarta Selatan', jenis: 'SDA Pos Pantau', status: 'Online', ispu: 95, lastUpdate: '2 Mnt Lalu' },
+  { id: 'ST-04', nama: 'Pos Pantau Sunter III', lokasi: 'Jakarta Utara', jenis: 'SDA Pos Pantau', status: 'Maintenance', ispu: 140, lastUpdate: '1 Jam Lalu' },
+  { id: 'ST-05', nama: 'SPKU Kebon Jeruk', lokasi: 'Jakarta Barat', jenis: 'DLH Air Quality', status: 'Online', ispu: 135, lastUpdate: '12 Mnt Lalu' },
+  { id: 'ST-06', nama: 'Pos Pantau Cipinang', lokasi: 'Jakarta Timur', jenis: 'SDA Pos Pantau', status: 'Online', ispu: 142, lastUpdate: '3 Mnt Lalu' },
 ];

@@ -1,13 +1,13 @@
-# Smart Public Service Jakarta - Resilience Dashboard v3.0
+# Smart Public Service Jakarta - Resilience Dashboard v4.0
 
-Dashboard intelijen ketahanan perkotaan dengan **Real-Time Public API Integration** dan **Dynamic Policy Recommendation Engine**.
+Dashboard Intelijen Ketahanan Perkotaan Lengkap dengan **BPBD Jakarta Waterlevel API Integration**, **Automated Policy Recommendation Engine**, dan seluruh modul analitik V2 (Peta Spasial, Matriks Risiko, Sensor Network, dan Recharts Analytics).
 
-## 🚀 Fitur Baru v3.0:
-- **Real-Time Flood API Route (`/api/flood`):** Integrasi live data pos pantau pintu air dan status genangan.
-- **Dynamic Policy Recommendation Engine:** Otomasi saran kebijakan berbasis ambang batas indikator lingkungan & kesehatan.
-- **Real-Time Risk Scoring:** Perhitungan skor ketahanan perkotaan yang diperbarui secara dinamis.
+## 🚀 Fitur Unggulan v4.0:
+- **BPBD Waterlevel API (`/api/waterlevel`):** Data live ketinggian air, status siaga (Siaga 1-4), tren air, dan cuaca lokal pos pantau BPBD.
+- **Dynamic Policy Recommendation Panel:** Otomasi instruksi tindakan berbasis ambang batas multivariat.
+- **Seluruh Modul V2:** Modul Filter Tabs, Matriks Risiko Lingkungan & Kesehatan, Tabel Stasiun Sensor Network, dan Grafik Recharts.
 
 ## 📦 Deploy
 1. Ekstrak & `npm install`
 2. Jalankan `npm run dev`
-3. Commit & Push ke GitHub untuk auto-deploy di Vercel.
+3. Push ke GitHub & Vercel.

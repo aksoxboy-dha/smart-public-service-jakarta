@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { JAKARTA_REGIONS, MONTHLY_TRENDS } from '@/lib/mockData';
+import { JAKARTA_REGIONS, MONTHLY_TRENDS, STATIONS_DATA } from '@/lib/mockData';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -31,5 +31,6 @@ export async function GET(request: Request) {
     },
     details: data,
     trends: MONTHLY_TRENDS,
+    stations: STATIONS_DATA,
   });
 }
