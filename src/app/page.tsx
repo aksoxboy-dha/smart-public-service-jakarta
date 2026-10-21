@@ -27,6 +27,8 @@ export default function DashboardPage() {
 
   const fetchAllData = () => {
     setLoadingSync(true);
+
+    // 1. Sync Resilience & Region Data
     fetch(`/api/resilience?region=${selectedRegion}`)
       .then((res) => res.json())
       .then((data) => {
@@ -36,12 +38,24 @@ export default function DashboardPage() {
         setStations(data.stations);
       });
 
+    // 2. Sync BPBD Waterlevel Live
     fetch('/api/waterlevel')
       .then((res) => res.json())
-      .then((data) => {
-        setBpbdData(data);
-        setLoadingSync(false);
+      .then((data) => setBpbdData(data));
+
+    // 3. Sync Live Air Quality (AQICN)
+    fetch('/api/airquality')
+      .then((res) => res.json())
+      .then((air) => {
+        if (air.success && summaryData) {
+          setSummaryData((prev: any) => ({
+            ...prev,
+            avgISPU: air.ispu,
+          }));
+        }
       });
+
+    setLoadingSync(false);
   };
 
   useEffect(() => {
