@@ -17,7 +17,6 @@ import { WilayahData } from '@/lib/mockData';
 export default function ChartsSection({
   liveAqi,
   liveIspa,
-  liveBor,
   regionData,
 }: {
   liveAqi: number;

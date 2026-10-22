@@ -33,6 +33,16 @@ export interface FloodMarker {
   status: 'Genangan Ringan' | 'Genangan Sedang' | 'Genangan Tinggi';
 }
 
+export interface StasiunData {
+  id: string;
+  nama: string;
+  lokasi: string;
+  jenis: 'DLH Air Quality' | 'SDA Pos Pantau' | 'Dinkes Faskes';
+  status: 'Online' | 'Maintenance' | 'Offline';
+  ispu: number;
+  lastUpdate: string;
+}
+
 export interface BPBDWaterLevel {
   id: string;
   nama: string;
@@ -68,4 +78,13 @@ export const JAKARTA_REGIONS: WilayahData[] = [
   { id: '3173', nama: 'Jakarta Pusat', ispu: 110, pm25: 39, statusAir: 'Normal', tinggiAir: 90, kasusDBD: 30, kasusISPA: 210, bedOccupancy: 74, crmResolved: 95, lat: -6.1865, lng: 106.834, kategoriRisiko: 'Rendah' },
   { id: '3174', nama: 'Jakarta Barat', ispu: 135, pm25: 55, statusAir: 'Normal', tinggiAir: 130, kasusDBD: 62, kasusISPA: 380, bedOccupancy: 79, crmResolved: 85, lat: -6.1683, lng: 106.7588, kategoriRisiko: 'Sedang' },
   { id: '3175', nama: 'Jakarta Utara', ispu: 155, pm25: 71, statusAir: 'Siaga 2', tinggiAir: 210, kasusDBD: 54, kasusISPA: 450, bedOccupancy: 85, crmResolved: 81, lat: -6.1384, lng: 106.864, kategoriRisiko: 'Tinggi' },
+];
+
+export const STATIONS_DATA: StasiunData[] = [
+  { id: 'ST-01', nama: 'SPKU Bundaran HI', lokasi: 'Jakarta Pusat', jenis: 'DLH Air Quality', status: 'Online', ispu: 110, lastUpdate: '10 Mnt Lalu' },
+  { id: 'ST-02', nama: 'SPKU Kelapa Gading', lokasi: 'Jakarta Utara', jenis: 'DLH Air Quality', status: 'Online', ispu: 155, lastUpdate: '5 Mnt Lalu' },
+  { id: 'ST-03', nama: 'Pos Pantau Manggarai', lokasi: 'Jakarta Selatan', jenis: 'SDA Pos Pantau', status: 'Online', ispu: 95, lastUpdate: '2 Mnt Lalu' },
+  { id: 'ST-04', nama: 'Pos Pantau Sunter III', lokasi: 'Jakarta Utara', jenis: 'SDA Pos Pantau', status: 'Maintenance', ispu: 140, lastUpdate: '1 Jam Lalu' },
+  { id: 'ST-05', nama: 'SPKU Kebon Jeruk', lokasi: 'Jakarta Barat', jenis: 'DLH Air Quality', status: 'Online', ispu: 135, lastUpdate: '12 Mnt Lalu' },
+  { id: 'ST-06', nama: 'Pos Pantau Cipinang', lokasi: 'Jakarta Timur', jenis: 'SDA Pos Pantau', status: 'Online', ispu: 142, lastUpdate: '3 Mnt Lalu' },
 ];

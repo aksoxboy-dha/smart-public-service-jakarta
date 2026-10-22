@@ -20,7 +20,6 @@ export default function AirRanking({
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-1">
-        {/* Kualitas Udara Terbaik Panel */}
         <div className="bg-emerald-950/20 border border-emerald-800/40 p-4 rounded-2xl space-y-3">
           <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
             <div className="p-1.5 bg-emerald-500/20 rounded-full">
@@ -48,7 +47,6 @@ export default function AirRanking({
           </div>
         </div>
 
-        {/* Kualitas Udara Terburuk Panel */}
         <div className="bg-amber-950/20 border border-amber-800/40 p-4 rounded-2xl space-y-3">
           <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
             <div className="p-1.5 bg-amber-500/20 rounded-full">

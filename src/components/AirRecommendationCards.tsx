@@ -5,7 +5,6 @@ import { Smile, AlertTriangle } from 'lucide-react';
 export default function AirRecommendationCards() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {/* Terbaik Hari Ini */}
       <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl space-y-3">
         <div className="text-[11px] text-slate-400">
           Kualitas Udara Terbaik Hari Ini — <strong className="text-slate-200">Kamis, 22 Oktober 2026 11.00 WIB</strong>
@@ -26,12 +25,11 @@ export default function AirRecommendationCards() {
         <div className="space-y-1 text-xs">
           <strong className="text-slate-300 font-semibold">Rekomendasi Aktivitas:</strong>
           <p className="text-slate-400 leading-relaxed text-[11px]">
-            Setiap orang: Kualitas udara sangat baik dan aman. Semua orang dapat melakukan berbagai kegiatan di luar ruangan dengan nyaman tanpa risiko gangguan kesehatan.
+            Setiap orang: Kualitas udara sangat baik dan aman. Semua orang dapat melakukan berbagai kegiatan di luar ruangan dengan nyaman.
           </p>
         </div>
       </div>
 
-      {/* Terburuk Hari Ini */}
       <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl space-y-3">
         <div className="text-[11px] text-slate-400">
           Kualitas Udara Terburuk Hari Ini — <strong className="text-slate-200">Kamis, 22 Oktober 2026 11.00 WIB</strong>
@@ -52,7 +50,7 @@ export default function AirRecommendationCards() {
         <div className="space-y-1 text-xs">
           <strong className="text-slate-300 font-semibold">Rekomendasi Aktivitas:</strong>
           <p className="text-slate-400 leading-relaxed text-[11px]">
-            Kelompok sensitif: Hindari aktivitas di luar ruangan. Gunakan masker N95 jika harus keluar. Pastikan ruangan memiliki filter udara yang baik.
+            Kelompok sensitif: Hindari aktivitas di luar ruangan. Gunakan masker N95 jika harus keluar.
           </p>
         </div>
       </div>
