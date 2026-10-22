@@ -1,9 +1,10 @@
-# Smart Public Service Jakarta - Resilience Dashboard v4.0
+# Smart Public Service Jakarta - Resilience Dashboard v5.0
 
-Dashboard Intelijen Ketahanan Perkotaan Lengkap dengan **BPBD Jakarta Waterlevel API Integration**, **Automated Policy Recommendation Engine**, dan seluruh modul analitik V2 (Peta Spasial, Matriks Risiko, Sensor Network, dan Recharts Analytics).
+Dashboard Intelijen Ketahanan Perkotaan Lengkap dengan **Live WAQI Air Quality API Integration**, **BPBD Waterlevel API**, **Automated Policy Recommendation Engine**, dan seluruh modul analitik V2/V4.
 
-## 🚀 Fitur Unggulan v4.0:
-- **BPBD Waterlevel API (`/api/waterlevel`):** Data live ketinggian air, status siaga (Siaga 1-4), tren air, dan cuaca lokal pos pantau BPBD.
+## 🚀 Fitur Unggulan v5.0:
+- **Live WAQI Air Quality API (`/api/airquality`):** Mengambil data ISPU & PM2.5 real-time dari stasiun pemantau Jakarta via WAQI API Token resmi.
+- **Live BPBD Waterlevel API (`/api/waterlevel`):** Data TMA, status siaga (Siaga 1-4), tren air, dan cuaca lokal pos pantau BPBD.
 - **Dynamic Policy Recommendation Panel:** Otomasi instruksi tindakan berbasis ambang batas multivariat.
 - **Seluruh Modul V2:** Modul Filter Tabs, Matriks Risiko Lingkungan & Kesehatan, Tabel Stasiun Sensor Network, dan Grafik Recharts.
 

@@ -29,7 +29,7 @@ export interface BPBDWaterLevel {
   nama: string;
   ketinggian: number;
   status: 'Siaga 1' | 'Siaga 2' | 'Siaga 3' | 'Normal (Siaga 4)';
-  trend: 'Naik' | 'Turun' | 'Konstan';
+  trend: 'Naik' | 'Turun' | 'Konstan' | 'Terang';
   cuaca: string;
   lokasi: string;
   lastUpdate: string;

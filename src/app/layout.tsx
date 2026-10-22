@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Smart Public Service Jakarta - Resilience Dashboard v4.0',
-  description: 'Platform Intelijen Ketahanan Perkotaan & Kesehatan Masyarakat DKI Jakarta terintegrasi BPBD Waterlevel',
+  title: 'Smart Public Service Jakarta - Resilience Dashboard v5.0',
+  description: 'Platform Intelijen Ketahanan Perkotaan & Kesehatan Masyarakat DKI Jakarta terintegrasi Live WAQI & BPBD',
 };
 
 export default function RootLayout({
