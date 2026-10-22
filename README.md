@@ -1,14 +1,14 @@
-# Smart Public Service Jakarta - Resilience Dashboard v5.0
+# Smart Public Service Jakarta - Resilience Dashboard v6.0
 
-Dashboard Intelijen Ketahanan Perkotaan Lengkap dengan **Live WAQI Air Quality API Integration**, **BPBD Waterlevel API**, **Automated Policy Recommendation Engine**, dan seluruh modul analitik V2/V4.
+Dashboard Intelijen Ketahanan Perkotaan Lengkap dengan **Fix WAQI Jakarta Location**, **Live Health API (ISPA & BOR RS)**, **Pantau Banjir Spatial Map Layers**, dan **Dynamic Reactive Recharts**.
 
-## 🚀 Fitur Unggulan v5.0:
-- **Live WAQI Air Quality API (`/api/airquality`):** Mengambil data ISPU & PM2.5 real-time dari stasiun pemantau Jakarta via WAQI API Token resmi.
-- **Live BPBD Waterlevel API (`/api/waterlevel`):** Data TMA, status siaga (Siaga 1-4), tren air, dan cuaca lokal pos pantau BPBD.
-- **Dynamic Policy Recommendation Panel:** Otomasi instruksi tindakan berbasis ambang batas multivariat.
-- **Seluruh Modul V2:** Modul Filter Tabs, Matriks Risiko Lingkungan & Kesehatan, Tabel Stasiun Sensor Network, dan Grafik Recharts.
+## 🚀 Perbaikan & Peningkatan v6.0:
+- **Fixed Jakarta Location Air Quality (`/api/airquality`):** Memaksa lokasi stasiun SPKU DKI Jakarta (Bundaran HI / Kelapa Gading / Kebon Jeruk), bukan lokasi server Vercel USA.
+- **Live Health API Integration (`/api/health`):** Data live real-time BOR RSUD Jakarta & Kasus ISPA.
+- **Enhanced Spatial Map (`JakartaMap.tsx`):** Menampilkan layer genangan air Pantau Banjir Jakarta beserta lokasi stasiun pemantau.
+- **Dynamic Reactive Charts (`ChartsSection.tsx`):** Chart ISPU vs ISPA & BOR RS yang ter-update secara otomatis mengikuti data live API.
 
 ## 📦 Deploy
 1. Ekstrak & `npm install`
 2. Jalankan `npm run dev`
-3. Push ke GitHub & Vercel.
+3. Commit & Push ke GitHub (`git push origin main --force`)

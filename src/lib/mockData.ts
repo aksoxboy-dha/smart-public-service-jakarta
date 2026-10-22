@@ -14,6 +14,17 @@ export interface WilayahData {
   kategoriRisiko: 'Tinggi' | 'Sedang' | 'Rendah';
 }
 
+export interface FloodMarker {
+  id: string;
+  lokasi: string;
+  wilayah: string;
+  ketinggianAir: number; // cm
+  rtTerdampak: number;
+  lat: number;
+  lng: number;
+  status: 'Genangan Ringan' | 'Genangan Sedang' | 'Genangan Tinggi';
+}
+
 export interface StasiunData {
   id: string;
   nama: string;
@@ -111,15 +122,6 @@ export const JAKARTA_REGIONS: WilayahData[] = [
     lng: 106.864,
     kategoriRisiko: 'Tinggi',
   },
-];
-
-export const MONTHLY_TRENDS = [
-  { bulan: 'Mei', ispu: 105, ispa: 280, dbd: 35 },
-  { bulan: 'Jun', ispu: 118, ispa: 310, dbd: 42 },
-  { bulan: 'Jul', ispu: 132, ispa: 360, dbd: 50 },
-  { bulan: 'Agt', ispu: 148, ispa: 410, dbd: 48 },
-  { bulan: 'Sep', ispu: 140, ispa: 390, dbd: 55 },
-  { bulan: 'Okt', ispu: 133, ispa: 354, dbd: 54 },
 ];
 
 export const STATIONS_DATA: StasiunData[] = [

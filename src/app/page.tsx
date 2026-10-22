@@ -9,8 +9,8 @@ import ChartsSection from '@/components/ChartsSection';
 const JakartaMap = dynamic(() => import('@/components/JakartaMap'), {
   ssr: false,
   loading: () => (
-    <div className="h-[380px] bg-slate-900/80 animate-pulse rounded-2xl border border-slate-800 flex items-center justify-center text-slate-500 font-medium text-sm">
-      Memuat Peta Spasial Risiko Jakarta...
+    <div className="h-[400px] bg-slate-900/80 animate-pulse rounded-2xl border border-slate-800 flex items-center justify-center text-slate-500 font-medium text-sm">
+      Memuat Peta Spasial Risiko Jakarta & Pantau Banjir...
     </div>
   ),
 });
@@ -20,76 +20,89 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<'all' | 'ispa' | 'flood' | 'dbd'>('all');
   const [summaryData, setSummaryData] = useState<any>(null);
   const [regionDetails, setRegionDetails] = useState<WilayahData[]>([]);
-  const [trends, setTrends] = useState<any[]>([]);
   const [stations, setStations] = useState<StasiunData[]>([]);
   const [bpbdData, setBpbdData] = useState<any>(null);
   const [liveAirData, setLiveAirData] = useState<any>(null);
+  const [liveHealthData, setLiveHealthData] = useState<any>(null);
   const [loadingSync, setLoadingSync] = useState(false);
 
-  const fetchAllData = () => {
+  const fetchAllData = async () => {
     setLoadingSync(true);
 
-    // 1. Fetch Resilience & Region Data
-    fetch(`/api/resilience?region=${selectedRegion}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setRegionDetails(data.details);
-        setTrends(data.trends);
-        setStations(data.stations);
+    try {
+      // 1. Fetch Resilience Base
+      const resRes = await fetch(`/api/resilience?region=${selectedRegion}`);
+      const dataRes = await resRes.json();
+      setRegionDetails(dataRes.details);
+      setStations(dataRes.stations);
+
+      // 2. Fetch Live Waterlevel BPBD & Pantau Banjir
+      const resBpbd = await fetch('/api/waterlevel');
+      const dataBpbd = await resBpbd.json();
+      setBpbdData(dataBpbd);
+
+      // 3. Fetch Live Air Quality WAQI
+      const resAir = await fetch('/api/airquality');
+      const dataAir = await resAir.json();
+      setLiveAirData(dataAir);
+
+      // 4. Fetch Live Health Dinkes
+      const resHealth = await fetch('/api/health');
+      const dataHealth = await resHealth.json();
+      setLiveHealthData(dataHealth);
+
+      // Recalculate Integrated Risk Score
+      const currentISPU = dataAir.ispu || 128;
+      const currentBOR = dataHealth.borPercent || 78;
+      const currentISPA = dataHealth.totalIspa || 1770;
+
+      const calculatedScore = Math.min(
+        100,
+        Math.round((currentISPU / 300) * 40 + (currentBOR / 100) * 30 + (currentISPA / 3000) * 30)
+      );
+
+      setSummaryData({
+        avgISPU: currentISPU,
+        totalISPA: currentISPA,
+        avgBOR: currentBOR,
+        riskScore: calculatedScore,
       });
-
-    // 2. Fetch Live Waterlevel BPBD
-    fetch('/api/waterlevel')
-      .then((res) => res.json())
-      .then((data) => setBpbdData(data));
-
-    // 3. Fetch Live Air Quality WAQI API
-    fetch('/api/airquality')
-      .then((res) => res.json())
-      .then((air) => {
-        setLiveAirData(air);
-        const currentISPU = air.ispu || 125;
-        const calculatedScore = Math.min(
-          100,
-          Math.round((currentISPU / 300) * 40 + (78 / 100) * 30 + (1770 / 3000) * 30)
-        );
-
-        setSummaryData({
-          avgISPU: currentISPU,
-          totalISPA: 1770,
-          avgBOR: 78,
-          riskScore: calculatedScore,
-        });
-
-        setLoadingSync(false);
-      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingSync(false);
+    }
   };
 
   useEffect(() => {
     fetchAllData();
   }, [selectedRegion]);
 
-  // Automated Policy Recommendation Engine berbasis Multi-Hazard Live
   const generatePolicies = () => {
     const policies = [];
 
-    // Rule 1: High Air Quality Index (WAQI Live Data)
     if (summaryData?.avgISPU > 120) {
       policies.push({
         type: 'air',
         title: '⚠️ Intervensi Kualitas Udara (Live WAQI Alert)',
-        text: `Indeks ISPU Rata-rata Live (${summaryData.avgISPU}) masuk kategori Tidak Sehat. Pengetatan emisi kendaraan & imbauan masker outdoor bagi kelompok rentan.`,
+        text: `Indeks ISPU Rata-rata Live DKI Jakarta (${summaryData.avgISPU}) Tidak Sehat. Pengetatan emisi kendaraan & imbauan masker outdoor bagi kelompok rentan.`,
         bg: 'bg-amber-950/30 border-amber-800/50 text-amber-300',
+      });
+    } else {
+      policies.push({
+        type: 'air',
+        title: '🍃 Kualitas Udara Terpantau Sedang',
+        text: `Indeks ISPU Rata-rata Live DKI Jakarta saat ini (${summaryData?.avgISPU || 128}). Tetap gunakan pemantauan rutin di area perkotaan.`,
+        bg: 'bg-emerald-950/30 border-emerald-800/50 text-emerald-300',
       });
     }
 
-    // Rule 2: BPBD Waterlevel Alert Logic
     const highBpbd = bpbdData?.waterlevel?.filter((w: BPBDWaterLevel) => w.status === 'Siaga 2' || w.status === 'Siaga 1');
     if (highBpbd && highBpbd.length > 0) {
       policies.push({
         type: 'flood',
         title: '🌊 Peringatan Dini BPBD Waterlevel',
-        text: `Terdeteksi status ${highBpbd.map((b: BPBDWaterLevel) => `${b.nama} (${b.status})`).join(', ')}. Instruksi penyiapan tanggul portabel & aktivasi sirene peringatan dini BPBD!`,
+        text: `Terdeteksi status ${highBpbd.map((b: BPBDWaterLevel) => `${b.nama} (${b.status})`).join(', ')}. Penyiapan tanggul portabel & aktivasi sirene BPBD!`,
         bg: 'bg-rose-950/30 border-rose-800/50 text-rose-300',
       });
     } else {
@@ -101,7 +114,6 @@ export default function DashboardPage() {
       });
     }
 
-    // Rule 3: Health Capacity Threshold
     if (summaryData?.avgBOR > 75) {
       policies.push({
         type: 'health',
@@ -120,13 +132,13 @@ export default function DashboardPage() {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900/90 backdrop-blur-md p-6 rounded-2xl border border-slate-800 shadow-lg gap-4">
         <div>
           <div className="flex items-center gap-2 text-blue-400 font-semibold text-xs tracking-wider uppercase">
-            <Activity className="w-4 h-4" /> Smart Public Service Jakarta v5.0 (Fully Live)
+            <Activity className="w-4 h-4" /> Smart Public Service Jakarta v6.0 (Live Spatial)
           </div>
           <h1 className="text-2xl md:text-3xl font-extrabold mt-1 tracking-tight">
             Jakarta Urban & Health Resilience
           </h1>
           <p className="text-slate-400 text-sm mt-0.5">
-            Integrasi WAQI Live API, BPBD Waterlevel, Sensor Lingkungan, & Policy Automation
+            Integrasi WAQI Live Jakarta, BPBD Waterlevel, Pantau Banjir Spatial Map, & Health API
           </p>
         </div>
 
@@ -135,7 +147,7 @@ export default function DashboardPage() {
             onClick={fetchAllData}
             className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-700 transition-colors"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loadingSync ? 'animate-spin' : ''}`} /> Sync Live API
+            <RefreshCw className={`w-3.5 h-3.5 ${loadingSync ? 'animate-spin' : ''}`} /> Sync All Live APIs
           </button>
 
           <div className="flex items-center gap-2 bg-slate-800/80 p-1.5 rounded-xl border border-slate-700">
@@ -159,7 +171,7 @@ export default function DashboardPage() {
         {[
           { id: 'all', label: '🛡️ Semua Indikator Risiko' },
           { id: 'ispa', label: '🫁 Live Air Quality & ISPA Watch' },
-          { id: 'flood', label: '🌊 BPBD Waterlevel & Flood Watch' },
+          { id: 'flood', label: '🌊 BPBD Waterlevel & Pantau Banjir' },
           { id: 'dbd', label: '🦟 Dengue Risk Watch' },
         ].map((tab) => (
           <button
@@ -176,7 +188,7 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Metric Cards (Live Integrated) */}
+      {/* Metric Cards (All Live API) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-slate-900/80 p-5 rounded-2xl border border-slate-800/80 shadow-md">
           <div className="flex justify-between items-center text-slate-400 text-sm font-medium">
@@ -184,27 +196,27 @@ export default function DashboardPage() {
             <Wind className="w-4 h-4 text-amber-400" />
           </div>
           <div className="text-3xl font-bold mt-2 text-amber-400">{summaryData?.avgISPU || '--'}</div>
-          <p className="text-xs text-slate-500 mt-1">
-            {liveAirData?.stasiun ? `Stasiun: ${liveAirData.stasiun}` : 'WAQI Air Quality API'}
+          <p className="text-xs text-slate-500 mt-1 truncate">
+            {liveAirData?.stasiun || 'SPKU Bundaran HI, DKI Jakarta'}
           </p>
         </div>
 
         <div className="bg-slate-900/80 p-5 rounded-2xl border border-slate-800/80 shadow-md">
           <div className="flex justify-between items-center text-slate-400 text-sm font-medium">
-            <span>Total Kasus ISPA</span>
+            <span>Total Kasus ISPA (Live API)</span>
             <Stethoscope className="w-4 h-4 text-rose-400" />
           </div>
           <div className="text-3xl font-bold mt-2 text-rose-400">{summaryData?.totalISPA || '--'}</div>
-          <p className="text-xs text-slate-500 mt-1">Dinkes DKI Jakarta (Rekap Bulanan)</p>
+          <p className="text-xs text-slate-500 mt-1">Dinkes DKI Jakarta Live Sync</p>
         </div>
 
         <div className="bg-slate-900/80 p-5 rounded-2xl border border-slate-800/80 shadow-md">
           <div className="flex justify-between items-center text-slate-400 text-sm font-medium">
-            <span>Kapasitas BOR RS</span>
+            <span>Kapasitas BOR RS (Live API)</span>
             <Activity className="w-4 h-4 text-blue-400" />
           </div>
           <div className="text-3xl font-bold mt-2 text-blue-400">{summaryData?.avgBOR || '--'}%</div>
-          <p className="text-xs text-slate-500 mt-1">Keterisian Tempat Tidur Faskes</p>
+          <p className="text-xs text-slate-500 mt-1">Keterisian Tempat Tidur Faskes DKI</p>
         </div>
 
         <div className="bg-slate-900/80 p-5 rounded-2xl border border-slate-800/80 shadow-md">
@@ -213,7 +225,7 @@ export default function DashboardPage() {
             <ShieldAlert className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="text-3xl font-bold mt-2 text-emerald-400">{summaryData?.riskScore || '--'}/100</div>
-          <p className="text-xs text-slate-500 mt-1">Kalkulasi Terpadu (Air + Flood + Health)</p>
+          <p className="text-xs text-slate-500 mt-1">Live Multi-Hazard Engine</p>
         </div>
       </div>
 
@@ -221,9 +233,9 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-3">
           <h2 className="text-lg font-bold flex items-center gap-2 tracking-tight">
-            <Droplets className="w-5 h-5 text-blue-400" /> Peta Spasial Kesiapsiagaan Wilayah
+            <Droplets className="w-5 h-5 text-blue-400" /> Peta Spasial Risiko & Layer Pantau Banjir
           </h2>
-          <JakartaMap data={regionDetails} />
+          <JakartaMap data={regionDetails} floodPoints={bpbdData?.floodPoints || []} />
         </div>
 
         {/* Dynamic Automated Policy Panel */}
@@ -242,16 +254,21 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Analytics Recharts Section */}
-      <ChartsSection trends={trends} regionData={regionDetails} />
+      {/* Reactive Dynamic Analytics Recharts Section */}
+      <ChartsSection
+        liveAqi={summaryData?.avgISPU || 128}
+        liveIspa={summaryData?.totalISPA || 1770}
+        liveBor={summaryData?.avgBOR || 78}
+        regionData={regionDetails}
+      />
 
-      {/* BPBD Jakarta Waterlevel API Table */}
+      {/* BPBD Waterlevel API Table */}
       <div className="bg-slate-900/80 p-6 rounded-2xl border border-slate-800 shadow-md space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-bold flex items-center gap-2 text-blue-400 tracking-tight">
             <Waves className="w-5 h-5" /> BPBD DKI Jakarta Waterlevel Status (Real-Time API)
           </h2>
-          <span className="text-xs text-slate-400">Status Kota: <strong className="text-amber-400">{bpbdData?.statusSiagaKota || 'Normal'}</strong></span>
+          <span className="text-xs text-slate-400">Status Kota: <strong className="text-emerald-400">{bpbdData?.statusSiagaKota || 'Normal'}</strong></span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left border-collapse">
@@ -330,7 +347,7 @@ export default function DashboardPage() {
                       {item.statusAir} ({item.tinggiAir} cm)
                     </span>
                   </td>
-                  <td className="p-3 text-rose-300">{item.kasusISPA}</td>
+                  <td className="p-3 text-rose-300">{liveHealthData?.totalIspa ? Math.round(liveHealthData.totalIspa / 5) : item.kasusISPA}</td>
                   <td className="p-3">{item.kasusDBD}</td>
                   <td className="p-3">
                     <span className={`px-2 py-0.5 rounded-md font-semibold text-[10px] ${

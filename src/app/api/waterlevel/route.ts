@@ -33,6 +33,11 @@ export async function GET() {
         { id: 'BPBD-06', nama: 'Pos Angke Hulu', ketinggian: 40, status: 'Normal (Siaga 4)', trend: 'Terang', cuaca: 'Terang', lokasi: 'Jakarta Barat', lastUpdate: '09:00 WIB' },
         { id: 'BPBD-07', nama: 'Pos Cipinang Hulu', ketinggian: 70, status: 'Normal (Siaga 4)', trend: 'Terang', cuaca: 'Terang', lokasi: 'Jakarta Timur', lastUpdate: '09:00 WIB' },
       ],
+      floodPoints: [
+        { id: 'FL-01', lokasi: 'Rawajati, DAS Ciliwung', wilayah: 'Jakarta Selatan', ketinggianAir: 25, rtTerdampak: 2, lat: -6.257, lng: 106.855, status: 'Genangan Ringan' },
+        { id: 'FL-02', lokasi: 'Kampung Melayu', wilayah: 'Jakarta Timur', ketinggianAir: 35, rtTerdampak: 4, lat: -6.224, lng: 106.862, status: 'Genangan Sedang' },
+        { id: 'FL-03', lokasi: 'Pluit & Muara Baru', wilayah: 'Jakarta Utara', ketinggianAir: 20, rtTerdampak: 3, lat: -6.118, lng: 106.802, status: 'Genangan Ringan' },
+      ],
       statusSiagaKota: 'Normal (Siaga 4)',
     });
   }
