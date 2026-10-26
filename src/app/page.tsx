@@ -27,10 +27,42 @@ export default function DashboardPage() {
   const [airBest, setAirBest] = useState<AirStationRanking[]>([]);
   const [airWorst, setAirWorst] = useState<AirStationRanking[]>([]);
   const [loadingSync, setLoadingSync] = useState(false);
+const [liveAirData, setLiveAirData] = useState<any>(null);
 
   const fetchAllData = async () => {
     setLoadingSync(true);
     try {
+const fetchAllData = async () => {
+  setLoadingSync(true);
+  try {
+    const resRes = await fetch('/api/resilience');
+    const dataRes = await resRes.json();
+    setRegionDetails(dataRes.details);
+    setStations(dataRes.stations || []);
+
+    const resAir = await fetch('/api/airquality');
+    const dataAir = await resAir.json();
+    setLiveAirData(dataAir); // <-- SET STATE DI SINI
+    setAirBest(dataAir.bestStations);
+    setAirWorst(dataAir.worstStations);
+
+    const resBpbd = await fetch('/api/waterlevel');
+    const dataBpbd = await resBpbd.json();
+    setBpbdData(dataBpbd);
+
+    setSummaryData({
+      avgISPU: dataAir.ispuAverage || 98,
+      totalISPA: 1770,
+      avgBOR: 78,
+      riskScore: 68,
+    });
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoadingSync(false);
+  }
+};
+
       const resRes = await fetch('/api/resilience');
       const dataRes = await resRes.json();
       setRegionDetails(dataRes.details);
