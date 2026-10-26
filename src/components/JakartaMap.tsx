@@ -21,7 +21,7 @@ export default function JakartaMap({
   floodPoints?: FloodMarker[];
 }) {
   return (
-    <div className="w-full h-[380px] rounded-2xl overflow-hidden border border-slate-800 shadow-xl">
+    <div className="w-full h-full min-h-[580px] rounded-2xl overflow-hidden border border-slate-800 shadow-xl">
       <MapContainer
         center={[-6.2088, 106.8456]}
         zoom={11}

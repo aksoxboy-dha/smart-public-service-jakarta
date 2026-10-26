@@ -11,7 +11,7 @@ import ChartsSection from '@/components/ChartsSection';
 const JakartaMap = dynamic(() => import('@/components/JakartaMap'), {
   ssr: false,
   loading: () => (
-    <div className="h-[380px] bg-slate-900/80 animate-pulse rounded-2xl border border-slate-800 flex items-center justify-center text-slate-500 font-medium text-sm">
+    <div className="h-full min-h-[580px] bg-slate-900/80 animate-pulse rounded-2xl border border-slate-800 flex items-center justify-center text-slate-500 font-medium text-sm">
       Memuat Peta Sebaran Pemantau Kualitas Udara & Pantau Banjir...
     </div>
   ),
@@ -116,7 +116,7 @@ export default function DashboardPage() {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900/90 backdrop-blur-md p-6 rounded-2xl border border-slate-800 shadow-lg gap-4">
         <div>
           <div className="flex items-center gap-2 text-blue-400 font-semibold text-xs tracking-wider uppercase">
-            <Activity className="w-4 h-4" /> Smart Public Service Jakarta v7.1 (Full Combined)
+            <Activity className="w-4 h-4" /> Smart Public Service Jakarta v7.2 (Layout & Date Fix)
           </div>
           <h1 className="text-2xl md:text-3xl font-extrabold mt-1 tracking-tight">
             Jakarta Urban & Health Resilience
@@ -150,7 +150,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Tabs Filter Modul Kewaspadaan (V2 Feature Restored) */}
+      {/* Tabs Filter Modul Kewaspadaan */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
         {[
           { id: 'all', label: '🛡️ Semua Indikator Risiko' },
@@ -211,20 +211,22 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Kualitas Udara Terbaik & Terburuk Section (V7 Feature) */}
+      {/* Kualitas Udara Terbaik & Terburuk Section */}
       <AirRanking best={airBest} worst={airWorst} />
 
-      {/* Main Grid: Peta Sebaran & Policy Recommendation Panel (V4 + V7 Feature Combined) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-3">
+      {/* Main Grid: Peta Sebaran & Policy Recommendation Panel */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+        <div className="lg:col-span-2 flex flex-col space-y-3">
           <h2 className="text-lg font-bold tracking-tight">
             Peta Sebaran Pemantau Kualitas Udara & Banjir
           </h2>
-          <JakartaMap data={regionDetails} floodPoints={bpbdData?.floodPoints || []} />
+          <div className="flex-1">
+            <JakartaMap data={regionDetails} floodPoints={bpbdData?.floodPoints || []} />
+          </div>
         </div>
 
-        <div className="space-y-4">
-          {/* Policy Recommendation Panel (V4 Restored) */}
+        <div className="space-y-4 flex flex-col justify-between">
+          {/* Policy Recommendation Panel */}
           <div className="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 shadow-md space-y-3">
             <h2 className="text-sm font-bold flex items-center gap-2 text-amber-400 tracking-tight">
               <FileText className="w-4 h-4" /> Automated Policy Recommendation
@@ -239,8 +241,12 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Air Recommendation Cards (V7 Feature) */}
-          <AirRecommendationCards />
+          {/* Air Recommendation Cards */}
+          <AirRecommendationCards 
+  best={airBest} 
+  worst={airWorst} 
+  lastUpdate={liveAirData?.lastUpdate} 
+/>
         </div>
       </div>
 
@@ -252,7 +258,7 @@ export default function DashboardPage() {
         regionData={regionDetails}
       />
 
-      {/* BPBD Waterlevel API Table (V4 Restored) */}
+      {/* BPBD Waterlevel API Table */}
       <div className="bg-slate-900/80 p-6 rounded-2xl border border-slate-800 shadow-md space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-bold flex items-center gap-2 text-blue-400 tracking-tight">
@@ -305,7 +311,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Matriks Risiko Lingkungan & Kesehatan Wilayah (V2 Restored) */}
+      {/* Matriks Risiko Lingkungan & Kesehatan Wilayah */}
       <div className="bg-slate-900/80 p-6 rounded-2xl border border-slate-800 shadow-md space-y-4">
         <h2 className="text-lg font-bold flex items-center gap-2 text-rose-400 tracking-tight">
           <AlertTriangle className="w-5 h-5" /> Matriks Risiko Lingkungan & Kesehatan Wilayah
@@ -355,7 +361,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Stasiun Pantau & Sensor Network Status Table (V2 Restored) */}
+      {/* Stasiun Pantau & Sensor Network Status Table */}
       <div className="bg-slate-900/80 p-6 rounded-2xl border border-slate-800 shadow-md space-y-4">
         <h2 className="text-lg font-bold flex items-center gap-2 text-blue-400 tracking-tight">
           <Radio className="w-5 h-5" /> Stasiun Pantau & Sensor Network Status
