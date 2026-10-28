@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { Activity, ShieldAlert, Wind, Stethoscope, MapPin, RefreshCw, Waves, FileText, AlertTriangle, Radio, TrendingUp } from 'lucide-react';
+import { Activity, ShieldAlert, Wind, Stethoscope, MapPin, RefreshCw, Waves, FileText, AlertTriangle, Radio, TrendingUp, Bell } from 'lucide-react';
 import { WilayahData, JAKARTA_REGIONS, AirStationRanking, BPBDWaterLevel, StasiunData } from '@/lib/mockData';
 import AirRanking from '@/components/AirRanking';
 import AirRecommendationCards from '@/components/AirRecommendationCards';
@@ -24,45 +24,15 @@ export default function DashboardPage() {
   const [regionDetails, setRegionDetails] = useState<WilayahData[]>([]);
   const [stations, setStations] = useState<StasiunData[]>([]);
   const [bpbdData, setBpbdData] = useState<any>(null);
+  const [liveAirData, setLiveAirData] = useState<any>(null);
+  const [bmkgAlerts, setBmkgAlerts] = useState<any[]>([]);
   const [airBest, setAirBest] = useState<AirStationRanking[]>([]);
   const [airWorst, setAirWorst] = useState<AirStationRanking[]>([]);
   const [loadingSync, setLoadingSync] = useState(false);
-const [liveAirData, setLiveAirData] = useState<any>(null);
 
   const fetchAllData = async () => {
     setLoadingSync(true);
     try {
-const fetchAllData = async () => {
-  setLoadingSync(true);
-  try {
-    const resRes = await fetch('/api/resilience');
-    const dataRes = await resRes.json();
-    setRegionDetails(dataRes.details);
-    setStations(dataRes.stations || []);
-
-    const resAir = await fetch('/api/airquality');
-    const dataAir = await resAir.json();
-    setLiveAirData(dataAir); // <-- SET STATE DI SINI
-    setAirBest(dataAir.bestStations);
-    setAirWorst(dataAir.worstStations);
-
-    const resBpbd = await fetch('/api/waterlevel');
-    const dataBpbd = await resBpbd.json();
-    setBpbdData(dataBpbd);
-
-    setSummaryData({
-      avgISPU: dataAir.ispuAverage || 98,
-      totalISPA: 1770,
-      avgBOR: 78,
-      riskScore: 68,
-    });
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setLoadingSync(false);
-  }
-};
-
       const resRes = await fetch('/api/resilience');
       const dataRes = await resRes.json();
       setRegionDetails(dataRes.details);
@@ -70,15 +40,20 @@ const fetchAllData = async () => {
 
       const resAir = await fetch('/api/airquality');
       const dataAir = await resAir.json();
-      setAirBest(dataAir.bestStations);
-      setAirWorst(dataAir.worstStations);
+      setLiveAirData(dataAir);
+      setAirBest(dataAir.bestStations || []);
+      setAirWorst(dataAir.worstStations || []);
 
       const resBpbd = await fetch('/api/waterlevel');
       const dataBpbd = await resBpbd.json();
       setBpbdData(dataBpbd);
 
+      const resBmkg = await fetch('/api/bmkg-cap');
+      const dataBmkg = await resBmkg.json();
+      setBmkgAlerts(dataBmkg.alerts || []);
+
       setSummaryData({
-        avgISPU: 98,
+        avgISPU: dataAir.ispuAverage || 98,
         totalISPA: 1770,
         avgBOR: 78,
         riskScore: 68,
@@ -97,6 +72,15 @@ const fetchAllData = async () => {
   const generatePolicies = () => {
     const policies = [];
 
+    if (bmkgAlerts.length > 0) {
+      policies.push({
+        type: 'bmkg',
+        title: '🚨 BMKG CAP Weather Alert Action Required',
+        text: `${bmkgAlerts[0].instruction || 'Waspadai hujan lebat disertai petir dan angin kencang di wilayah DKI Jakarta.'}`,
+        bg: 'bg-rose-950/40 border-rose-800 text-rose-300 font-medium',
+      });
+    }
+
     if (summaryData?.avgISPU > 100) {
       policies.push({
         type: 'air',
@@ -108,7 +92,7 @@ const fetchAllData = async () => {
       policies.push({
         type: 'air',
         title: '🍃 Kualitas Udara Terpantau Sedang (DLH Jakarta)',
-        text: `Indeks ISPU Rata-rata DLH DKI Jakarta saat ini (${summaryData?.avgISPU || 98}). Kondisi secara umum aman, kelompok sensitif tetap gunakan pemantauan rutin.`,
+        text: `Indeks ISPU Rata-rata DLH DKI Jakarta saat ini (${summaryData?.avgISPU || 98}). Kondisi secara umum aman.`,
         bg: 'bg-emerald-950/30 border-emerald-800/50 text-emerald-300',
       });
     }
@@ -130,15 +114,6 @@ const fetchAllData = async () => {
       });
     }
 
-    if (summaryData?.avgBOR > 75) {
-      policies.push({
-        type: 'health',
-        title: '🏥 Optimalisasi Rujukan Faskes',
-        text: `BOR RSUD Jakarta melampaui ${summaryData.avgBOR}%. Aktivasi rujukan berjenjang ke Puskesmas Kecamatan.`,
-        bg: 'bg-emerald-950/30 border-emerald-800/50 text-emerald-300',
-      });
-    }
-
     return policies;
   };
 
@@ -148,13 +123,13 @@ const fetchAllData = async () => {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900/90 backdrop-blur-md p-6 rounded-2xl border border-slate-800 shadow-lg gap-4">
         <div>
           <div className="flex items-center gap-2 text-blue-400 font-semibold text-xs tracking-wider uppercase">
-            <Activity className="w-4 h-4" /> Smart Public Service Jakarta v7.2 (Layout & Date Fix)
+            <Activity className="w-4 h-4" /> Smart Public Service Jakarta v8.0 (BMKG CAP Integrated)
           </div>
           <h1 className="text-2xl md:text-3xl font-extrabold mt-1 tracking-tight">
             Jakarta Urban & Health Resilience
           </h1>
           <p className="text-slate-400 text-sm mt-0.5">
-            Integrasi udara.jakarta.go.id, BPBD Waterlevel, Pantau Banjir, Policy Engine, & Sensor Network
+            Integrasi BMKG CAP EWS, udara.jakarta.go.id, BPBD Waterlevel, & Pantau Banjir
           </p>
         </div>
 
@@ -181,6 +156,19 @@ const fetchAllData = async () => {
           </div>
         </div>
       </header>
+
+      {/* BMKG CAP Early Warning System Emergency Banner */}
+      {bmkgAlerts.length > 0 && (
+        <div className="bg-rose-950/80 border border-rose-800/80 p-4 rounded-2xl flex items-center gap-3 text-rose-200 shadow-lg animate-pulse">
+          <Bell className="w-6 h-6 text-rose-400 flex-shrink-0" />
+          <div className="text-xs">
+            <strong className="block text-sm font-bold text-rose-200">
+              BMKG CAP ALERT: {bmkgAlerts[0].event || 'Peringatan Dini Cuaca BMKG'}
+            </strong>
+            <p className="text-rose-300 mt-0.5">{bmkgAlerts[0].headline}</p>
+          </div>
+        </div>
+      )}
 
       {/* Tabs Filter Modul Kewaspadaan */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
@@ -274,11 +262,11 @@ const fetchAllData = async () => {
           </div>
 
           {/* Air Recommendation Cards */}
-          <AirRecommendationCards 
-  best={airBest} 
-  worst={airWorst} 
-  lastUpdate={liveAirData?.lastUpdate} 
-/>
+          <AirRecommendationCards
+            best={airBest}
+            worst={airWorst}
+            lastUpdate={liveAirData?.lastUpdate}
+          />
         </div>
       </div>
 
